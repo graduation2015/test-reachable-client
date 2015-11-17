@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ReachaBLE_Client</string>
 
+    <string name="toolbar_title">@string/app_name</string>
+
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 </resources>
