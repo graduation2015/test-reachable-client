@@ -7,10 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
 
     /* DrawerLayout 関連フィールド */
+    private String[] mSideMenuTitles;
+    private ListView mDrawerList;
+    private ArrayAdapter<String> mSideMenuArrayAdapter;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -34,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setUpToolbar();
         //DrawerListenerにDrawerToggleをセット
         getDrawerLayout().setDrawerListener(getDrawerToggle());
+        //サイドメニューを設定
+        setUpDrawerList();
     }
 
     /**
@@ -43,6 +50,17 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(getToolbar());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+    /**
+     * サイドメニューを設定する
+     */
+    private void setUpDrawerList() {
+        //サイドメニュー用ArrayAdapterをセット
+        getDrawerList().setAdapter(getSideMenuArrayAdapter());
+        //サイドメニューのonItemClickListenerをセット
+        getDrawerList().setOnItemClickListener(new DrawerItemClickListener(
+                this, getDrawerList(), getDrawerLayout(), getToolbar(), getSideMenuTitles()));
     }
 
     public DrawerLayout getDrawerLayout() {
@@ -68,6 +86,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return mToolbar;
+    }
+
+    public String[] getSideMenuTitles() {
+        if (mSideMenuTitles == null) {
+            mSideMenuTitles = getResources().getStringArray(R.array.side_menu_titles);
+        }
+        return mSideMenuTitles;
+    }
+
+    public ListView getDrawerList() {
+        if (mDrawerList == null) {
+            mDrawerList = (ListView) findViewById(R.id.side_menu_list);
+        }
+        return mDrawerList;
+    }
+
+    public ArrayAdapter<String> getSideMenuArrayAdapter() {
+        if (mSideMenuArrayAdapter == null) {
+            mSideMenuArrayAdapter = new ArrayAdapter<>(
+                    this, android.R.layout.simple_list_item_1, getSideMenuTitles());
+        }
+        return mSideMenuArrayAdapter;
     }
 
     @Override
