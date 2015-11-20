@@ -27,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container_content, new CouponListFragment())
+                    .commit();
+        }
+
         //初期設定
         initSettings();
     }
