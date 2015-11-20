@@ -7,6 +7,8 @@
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Drawer open</string>
     <string name="drawer_close">Drawer close</string>
+    <string name="dialog_title_credentials">Credentials</string>
+    <string name="dialog_message_credentials">Getting credentials</string>
 
     <string-array name="side_menu_titles">
         <item>Item 1</item>

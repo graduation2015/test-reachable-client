@@ -3,6 +3,7 @@ package jp.ac.it_college.std.ikemen.reachable_client;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.content.res.Configuration;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,11 @@ public class MainActivity extends AppCompatActivity
 
     /* Toolbar 関連フィールド */
     private Toolbar mToolbar;
+
+    /* ProgressDialogFragment 関連フィールド */
+    private ProgressDialogFragment mProgressDialog;
+    private static final String TAG_PROGRESS_DIALOG_FRAGMENT = "progress_dialog";
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +133,22 @@ public class MainActivity extends AppCompatActivity
         return mSideMenuArrayAdapter;
     }
 
+    public ProgressDialogFragment getProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = ProgressDialogFragment.newInstance(
+                    getString(R.string.dialog_title_credentials),
+                    getString(R.string.dialog_message_credentials));
+        }
+        return mProgressDialog;
+    }
+
+    public Handler getHandler() {
+        if (mHandler == null) {
+            mHandler = new Handler(getMainLooper());
+        }
+        return mHandler;
+    }
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -152,6 +174,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Loader<AWSCredentials> onCreateLoader(int i, Bundle bundle) {
         Log.d(TAG, "onCreateLoader");
+        //ProgressDialogを表示
+        getProgressDialog().show(getFragmentManager(), TAG_PROGRESS_DIALOG_FRAGMENT);
         return new CognitoAsyncTaskLoader(this);
     }
 
@@ -160,6 +184,14 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "onLoadFinished");
         Log.d(TAG, "AccessKeyId = " + awsCredentials.getAWSAccessKeyId());
         Log.d(TAG, "SecretKey = " + awsCredentials.getAWSSecretKey());
+
+        getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                //ProgressDialogを非表示
+                getProgressDialog().dismiss();
+            }
+        });
 
         //Loaderを破棄
         getLoaderManager().destroyLoader(COGNITO_ASYNC_TASK_LOADER_ID);
