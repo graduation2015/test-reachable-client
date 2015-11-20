@@ -1,16 +1,25 @@
 package jp.ac.it_college.std.ikemen.reachable_client;
 
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+import com.amazonaws.auth.AWSCredentials;
+
+public class MainActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<AWSCredentials> {
+
+    private static final String TAG = "Tag_MainActivity";
+    private static final int COGNITO_ASYNC_TASK_LOADER_ID = 0;
 
     /* DrawerLayout 関連フィールド */
     private String[] mSideMenuTitles;
@@ -47,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         getDrawerLayout().setDrawerListener(getDrawerToggle());
         //サイドメニューを設定
         setUpDrawerList();
+        // Credentialを取得するLoaderを起動
+        getLoaderManager().initLoader(COGNITO_ASYNC_TASK_LOADER_ID, null, this);
     }
 
     /**
@@ -136,4 +147,26 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    /* Implemented LoaderManager.LoaderCallbacks */
+    @Override
+    public Loader<AWSCredentials> onCreateLoader(int i, Bundle bundle) {
+        Log.d(TAG, "onCreateLoader");
+        return new CognitoAsyncTaskLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<AWSCredentials> loader, AWSCredentials awsCredentials) {
+        Log.d(TAG, "onLoadFinished");
+        Log.d(TAG, "AccessKeyId = " + awsCredentials.getAWSAccessKeyId());
+        Log.d(TAG, "SecretKey = " + awsCredentials.getAWSSecretKey());
+
+        //Loaderを破棄
+        getLoaderManager().destroyLoader(COGNITO_ASYNC_TASK_LOADER_ID);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<AWSCredentials> loader) {
+
+    }
 }
