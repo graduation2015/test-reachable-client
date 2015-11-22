@@ -1,26 +1,19 @@
 package jp.ac.it_college.std.ikemen.reachable_client;
 
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.content.res.Configuration;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.amazonaws.auth.AWSCredentials;
 
-public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<AWSCredentials> {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Tag_MainActivity";
-    private static final int COGNITO_ASYNC_TASK_LOADER_ID = 0;
 
     /* DrawerLayout 関連フィールド */
     private String[] mSideMenuTitles;
@@ -31,11 +24,6 @@ public class MainActivity extends AppCompatActivity
 
     /* Toolbar 関連フィールド */
     private Toolbar mToolbar;
-
-    /* ProgressDialogFragment 関連フィールド */
-    private ProgressDialogFragment mProgressDialog;
-    private static final String TAG_PROGRESS_DIALOG_FRAGMENT = "progress_dialog";
-    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +50,6 @@ public class MainActivity extends AppCompatActivity
         getDrawerLayout().setDrawerListener(getDrawerToggle());
         //サイドメニューを設定
         setUpDrawerList();
-        // Credentialを取得するLoaderを起動
-        getLoaderManager().initLoader(COGNITO_ASYNC_TASK_LOADER_ID, null, this);
     }
 
     /**
@@ -133,22 +119,6 @@ public class MainActivity extends AppCompatActivity
         return mSideMenuArrayAdapter;
     }
 
-    public ProgressDialogFragment getProgressDialog() {
-        if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialogFragment.newInstance(
-                    getString(R.string.dialog_title_credentials),
-                    getString(R.string.dialog_message_credentials));
-        }
-        return mProgressDialog;
-    }
-
-    public Handler getHandler() {
-        if (mHandler == null) {
-            mHandler = new Handler(getMainLooper());
-        }
-        return mHandler;
-    }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -167,38 +137,5 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    /* Implemented LoaderManager.LoaderCallbacks */
-    @Override
-    public Loader<AWSCredentials> onCreateLoader(int i, Bundle bundle) {
-        Log.d(TAG, "onCreateLoader");
-        //ProgressDialogを表示
-        getProgressDialog().show(getFragmentManager(), TAG_PROGRESS_DIALOG_FRAGMENT);
-        return new CognitoAsyncTaskLoader(this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<AWSCredentials> loader, AWSCredentials awsCredentials) {
-        Log.d(TAG, "onLoadFinished");
-        Log.d(TAG, "AccessKeyId = " + awsCredentials.getAWSAccessKeyId());
-        Log.d(TAG, "SecretKey = " + awsCredentials.getAWSSecretKey());
-
-        getHandler().post(new Runnable() {
-            @Override
-            public void run() {
-                //ProgressDialogを非表示
-                getProgressDialog().dismiss();
-            }
-        });
-
-        //Loaderを破棄
-        getLoaderManager().destroyLoader(COGNITO_ASYNC_TASK_LOADER_ID);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<AWSCredentials> loader) {
-
     }
 }
