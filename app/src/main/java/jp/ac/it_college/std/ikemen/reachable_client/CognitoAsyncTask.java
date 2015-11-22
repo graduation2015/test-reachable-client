@@ -1,5 +1,6 @@
 package jp.ac.it_college.std.ikemen.reachable_client;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -12,9 +13,15 @@ import com.amazonaws.regions.Regions;
  */
 public class CognitoAsyncTask extends AsyncTask<Void, Void, AWSCredentials> {
     private Context mContext;
+    private ProgressDialog mProgressDialog;
 
     public CognitoAsyncTask(Context context) {
         this.mContext = context;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        getProgressDialog().show();
     }
 
     @Override
@@ -30,10 +37,31 @@ public class CognitoAsyncTask extends AsyncTask<Void, Void, AWSCredentials> {
 
     @Override
     protected void onPostExecute(AWSCredentials awsCredentials) {
-        super.onPostExecute(awsCredentials);
+        getProgressDialog().dismiss();
     }
 
     public Context getContext() {
         return mContext;
+    }
+
+    public ProgressDialog getProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = createProgressDialog();
+        }
+        return mProgressDialog;
+    }
+
+    /**
+     * ProgressDialogを生成して返す
+     * @return
+     */
+    private ProgressDialog createProgressDialog() {
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle(R.string.dialog_title_credentials);
+        progressDialog.setMessage(getContext().getString(R.string.dialog_message_credentials));
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCancelable(false);
+
+        return progressDialog;
     }
 }
