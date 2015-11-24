@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="jp.ac.it_college.std.ikemen.reachable_client.CouponListFragment">
+    tools:context="jp.ac.it_college.std.ikemen.reachable.client.CouponListFragment">
 
     <ListView
         android:id="@android:id/list"

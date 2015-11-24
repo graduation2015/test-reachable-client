@@ -1,4 +1,4 @@
-package jp.ac.it_college.std.ikemen.reachable_client;
+package jp.ac.it_college.std.ikemen.reachable.client;
 
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 
 public class MainActivity extends AppCompatActivity {
 

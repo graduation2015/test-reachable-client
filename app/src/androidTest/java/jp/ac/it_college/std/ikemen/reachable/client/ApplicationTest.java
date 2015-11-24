@@ -1,4 +1,4 @@
-package jp.ac.it_college.std.ikemen.reachable_client;
+package jp.ac.it_college.std.ikemen.reachable.client;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

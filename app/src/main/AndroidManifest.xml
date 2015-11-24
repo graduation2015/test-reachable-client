@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jp.ac.it_college.std.ikemen.reachable_client" >
+    package="jp.ac.it_college.std.ikemen.reachable.client" >
 
     <!-- AWS-->
     <uses-permission android:name="android.permission.INTERNET" />
